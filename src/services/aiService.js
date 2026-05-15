@@ -9,10 +9,16 @@ const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 // Extract location name from text
 export const extractLocation = (text) => {
     const lower = text.toLowerCase();
+    const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
     for (const loc of locations) {
         const cityName = loc.name.split(',')[0].toLowerCase().trim();
         const regionName = loc.region.toLowerCase().trim();
-        if (lower.includes(cityName) || lower.includes(regionName)) {
+
+        const cityRegex = new RegExp(`\\b${escapeRegExp(cityName)}\\b`, 'i');
+        const regionRegex = new RegExp(`\\b${escapeRegExp(regionName)}\\b`, 'i');
+
+        if (cityRegex.test(lower) || regionRegex.test(lower)) {
             return loc;
         }
     }
