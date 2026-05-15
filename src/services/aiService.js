@@ -55,7 +55,7 @@ const internalGetGuardianResponse = async (englishInput, rawInput, context) => {
     if (redFlags.some(f => input.includes(f))) {
         return {
             type: 'EMERGENCY',
-            text: `⚠️ **CRITICAL EMERGENCY**\n\nCall **${context.emergency}** immediately or go to the nearest emergency room **right now**.\n\nDo NOT wait. If you cannot move, ask someone nearby for immediate help.`,
+            text: `⚠️ CRITICAL EMERGENCY\n\nCall ${context.emergency} immediately or go to the nearest emergency room right now.\n\nDo NOT wait. If you cannot move, ask someone nearby for immediate help.`,
             escalate: true
         };
     }
@@ -66,7 +66,7 @@ const internalGetGuardianResponse = async (englishInput, rawInput, context) => {
     if (mentionedLocation && hasLocationContext && mentionedLocation.id !== context.locationId) {
         return {
             type: 'LOCATION_CHANGE',
-            text: `Location updated: **${mentionedLocation.name}**.\nEmergency: **${mentionedLocation.emergency}** | Lead facility: **${mentionedLocation.hospital}**`,
+            text: `Location updated: ${mentionedLocation.name}.\nEmergency: ${mentionedLocation.emergency} | Lead facility: ${mentionedLocation.hospital}`,
             location: mentionedLocation,
             escalate: false
         };
@@ -79,7 +79,7 @@ const internalGetGuardianResponse = async (englishInput, rawInput, context) => {
     if (intent === 'pharmacy') {
         return {
             type: 'PHARMACY_SEARCH',
-            text: `Looking for pharmacies${mentionedLoc ? ` in **${mentionedLoc.name}**` : ' in your area'}. Switching to the Real-time Hub — pharmacy tab is now active.`,
+            text: `Looking for pharmacies${mentionedLoc ? ` in ${mentionedLoc.name}` : ' in your area'}. Switching to the Real-time Hub — pharmacy tab is now active.`,
             locationOverride: mentionedLoc,
             escalate: false
         };
@@ -88,7 +88,7 @@ const internalGetGuardianResponse = async (englishInput, rawInput, context) => {
     if (intent === 'book') {
         return {
             type: 'BOOKING_INTENT',
-            text: `You can book appointments securely through the **Real-time Hub**. Just click the **📅 Book** button on any hospital or doctor card.\n\nWould you like me to find a specific specialist for you?`,
+            text: `You can book appointments securely through the Real-time Hub. Just click the 📅 Book button on any hospital or doctor card.\n\nWould you like me to find a specific specialist for you?`,
             escalate: false
         };
     }
@@ -96,7 +96,7 @@ const internalGetGuardianResponse = async (englishInput, rawInput, context) => {
     if (intent === 'cost') {
         return {
             type: 'COST_INTENT',
-            text: `Medical costs vary by facility. General consultations are usually around **₹300 - ₹800**.\n\n💡 **Tip:** You can use the **Tourist Mode** → **Low Cost** filter in the Real-time Hub to find budget-friendly facilities!`,
+            text: `Medical costs vary by facility. General consultations are usually around ₹300 - ₹800.\n\n💡 Tip: You can use the Tourist Mode → Low Cost filter in the Real-time Hub to find budget-friendly facilities!`,
             escalate: false
         };
     }
@@ -133,13 +133,13 @@ RULES:
     // 5. Fallback Specialty Detection (If AI fails or explicitly requested)
     const specialty = detectSpecialty(input);
     if (specialty && (intent === 'doctor' || intent === 'hospital' || /\b(suggest|find|need)\b/.test(input))) {
-        const locationNote = mentionedLoc ? ` in **${mentionedLoc.name}**` : ` in **${context.location}**`;
+        const locationNote = mentionedLoc ? ` in ${mentionedLoc.name}` : ` in ${context.location}`;
         return {
             type: 'SPECIALTY_SEARCH',
             specialty,
             intent,
             locationOverride: mentionedLoc,
-            text: `Understood. You need a **${specialtyLabels[specialty] || specialty} specialist**${locationNote}.\n\nI've filtered the **Real-time Hub** to show best available options.`,
+            text: `Understood. You need a ${specialtyLabels[specialty] || specialty} specialist${locationNote}.\n\nI've filtered the Real-time Hub to show best available options.`,
             escalate: false
         };
     }
@@ -160,14 +160,14 @@ RULES:
     if (escalate) {
         return {
             type: 'EXPERT_REFERRAL',
-            text: `Based on the persistence of your symptoms, I recommend visiting **${context.hospital}** in ${context.location}.\n\nSwitch to the "Real-time Hub" tab to see nearby facilities.`,
+            text: `Based on the persistence of your symptoms, I recommend visiting ${context.hospital} in ${context.location}.\n\nSwitch to the "Real-time Hub" tab to see nearby facilities.`,
             escalate: true
         };
     }
 
     return {
         type: 'EXPERT_ANALYSIS',
-        text: `**Home Care First:**\n${data.advice}\n\n**Assessment:** ${data.assessment}\n\n**Next Question:** ${data.followUp}`,
+        text: `Home Care First:\n${data.advice}\n\nAssessment: ${data.assessment}\n\nNext Question: ${data.followUp}`,
         escalate: false
     };
 };
